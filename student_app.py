@@ -42,7 +42,32 @@ class Student:
         except ValueError:
             print("please enter the  name of the student!! number is not allowed")
     #add the method to update the student information
-    
+    def update_information(self):
+        '''updates the student information'''
+        try: 
+            content = path.read_text(r'student.json')
+            students = json.loads(content)
+            name = input("enter the name of the student")
+            if name in students: 
+                print("select the details you want to edit: \n")
+                print("\n1.Name\n2.Roll_no")
+                choice = input("\nenter the option number: ")
+
+                match choice:
+                    case '1':
+                        new_name = input("enter the new name: ")
+                        students[name] = new_name
+                        content = json.dumps(students)
+                        json.write_text(r'students.json')
+                    case '2':
+                        new_roll = input("please ente the new roll_no: ")
+                        students[name]['roll_no'] = new_roll
+                        content = json.loads(students)
+                        path.write_text(content)
+            else:
+                print("student not found!!")
+        except ValueError: 
+            print("please enter the name of the student not roll number")
 
 
 
