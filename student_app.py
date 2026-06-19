@@ -1,26 +1,29 @@
 #import the required libraries
-from pathlib import path 
+from pathlib import Path 
 import json
 
 from pytest import mark 
 
 class Student:
-    def __init__(self,name,roll_no):
+    def __init__(self):
         '''initialize the needed attributes'''
-        self.name = name
-        self.roll_no = roll_no
-        self.marks = {}
-        self.student = {name:{roll_no:self.roll_no, self.marks:{}}}
-        self.students = {}
+        self.path = self._load_path()
     #method to add the student
     def add_student(self,name,roll_no):
         '''add the new student'''
-        self.student[self.name] = {'roll_no':roll_no, 'marks':{}}
+        contents = self.path.read_text()
+        students = json.loads(contents)
+        students[name] = {'roll_no':roll_no, 'marks':{}}
+        contents = json.dumps(students)
+        self.path.write_text(contents)
+        print("student added")
+
     #method to view all the student
     def view_all_studnets(self): 
         '''view all the studnet in the system'''
         i = 1
-        students = json.load(r'students.json')
+        contents = self.path.read_text()
+        students = json.loads(contents)
         for student in students.keys():
             print(f"{i}: {student}")
             i += 1
@@ -29,7 +32,8 @@ class Student:
         '''search student by their name'''
         name = input("please ente the name of the student").title()
         try:
-            students = json.load(r'students.json')
+            contents = self.path.read_text()
+            students = json.loads(contents)
             if name in students:
                 print("----student found---")
                 print("--HERE ARE THE DETAILS----")
@@ -45,8 +49,8 @@ class Student:
     def update_information(self):
         '''updates the student information'''
         try: 
-            content = path.read_text(r'student.json')
-            students = json.loads(content)
+            contents = self.path.read_text()
+            students = json.loads(contents)
             name = input("enter the name of the student")
             if name in students: 
                 print("select the details you want to edit: \n")
@@ -58,19 +62,19 @@ class Student:
                         new_name = input("enter the new name: ")
                         students[name] = new_name
                         content = json.dumps(students)
-                        path.write_text(content)
+                        self.path.write_text(content)
                     case '2':
                         new_roll = input("please ente the new roll_no: ")
                         students[name]['roll_no'] = new_roll
                         content = json.loads(students)
-                        path.write_text(content)
+                        self.path.write_text(content)
             else:
                 print("student not found!!")
         except ValueError: 
             print("please enter the name of the student not roll number")
     #add method that delets the student record
     def delete_student(self):
-        contents = path.read_text(r'students.json')
+        contents = self.path.read_text()
         students = json.load(contents)
         name = input("enter the name of the student: ")
         if name in students:
@@ -78,19 +82,42 @@ class Student:
             if confirm == name: 
                 del students[name]
                 content = json.dups(students)
-                path.write_text(content)
+                self.path.write_text(content)
                 print("updated the information")
             else: 
                 print("not the same name")
         else: 
             print("student not found")
+    def _load_path(self):
+        '''load the file path'''
+        path = Path(r'C:\Users\Envay\Desktop\python_mini_projects\students.json')
+        if path.exists():
+            return path
+        else: 
+            students = {}
+            contents = json.dumps(students)
+            path.write_text(contents)
+            return path
+
+
     #add method that runs the app 
     def run_student_app(self): 
         '''runs the application'''
         print("----------MAIN--MENU---------\n")
         print("\n1.Add new student\n2.search for the student\n3.update the student informtation")
+        choice = input("please select the correct option: ")
+        match choice:
+            case '1':
+                stdn = Student()
+                name = input("please enter the student name: ")
+                roll_no = input("please ente the roll no: ")
+                stdn.add_student(name,roll_no)
+def main():
+    std2 = Student()
+    std2.run_student_app()
 
-
+if __name__ == "__main__":
+    main()
 
 
 
