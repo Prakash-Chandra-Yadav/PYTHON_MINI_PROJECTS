@@ -58,7 +58,7 @@ class Student:
                         new_name = input("enter the new name: ")
                         students[name] = new_name
                         content = json.dumps(students)
-                        json.write_text(r'students.json')
+                        path.write_text(content)
                     case '2':
                         new_roll = input("please ente the new roll_no: ")
                         students[name]['roll_no'] = new_roll
@@ -68,6 +68,28 @@ class Student:
                 print("student not found!!")
         except ValueError: 
             print("please enter the name of the student not roll number")
+    #add method that delets the student record
+    def delete_student(self):
+        contents = path.read_text(r'students.json')
+        students = json.load(contents)
+        name = input("enter the name of the student: ")
+        if name in students:
+            confirm = input("please enter the student name again to confirm deletion: ")
+            if confirm == name: 
+                del students[name]
+                content = json.dups(students)
+                path.write_text(content)
+                print("updated the information")
+            else: 
+                print("not the same name")
+        else: 
+            print("student not found")
+    #add method that runs the app 
+    def run_student_app(self): 
+        '''runs the application'''
+        print("----------MAIN--MENU---------\n")
+        print("\n1.Add new student\n2.search for the student\n3.update the student informtation")
+
 
 
 
