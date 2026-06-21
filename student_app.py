@@ -12,12 +12,10 @@ class Student:
     def add_student(self,name,roll_no):
         '''add the new student'''
         #loads the json file
-        contents = self.path.read_text()
-        students = json.loads(contents)
+        students = self._load_file()
         students[name] = {'roll_no':roll_no, 'marks':{}}
         #saves the json file 
-        contents = json.dumps(students)
-        self.path.write_text(contents)
+        self._save_file(students)
         print("student added")
 
     #method to view all the student
@@ -25,8 +23,7 @@ class Student:
         '''view all the studnet in the system'''
         i = 1
         #loads the json file 
-        contents = self.path.read_text()
-        students = json.loads(contents)
+        students = self._load_file()
         for student in students.keys():
             print(f"{i}: {student}")
             i += 1
@@ -36,8 +33,7 @@ class Student:
         name = input("please ente the name of the student: ")
         try:
             #loads the json file
-            contents = self.path.read_text()
-            students = json.loads(contents)
+            students = self._load_file()
             if name in students:
                 print("----student found---")
                 print("--HERE ARE THE DETAILS----")
@@ -54,7 +50,7 @@ class Student:
         '''updates the student information'''
         try: 
             #loads the json files
-            students = self.load_file()
+            students = self._load_file()
             name = input("enter the name of the student")
             if name in students: 
                 print("select the details you want to edit: \n")
@@ -65,16 +61,14 @@ class Student:
                     case '1':
                         new_name = input("enter the new name: ")
                         students[new_name] = students.pop(name)
-                        #saves the json files 
-                        content = json.dumps(students)
-                        self.path.write_text(content)
+                        #saves the json files
+                        self._save_file(students)
                         print("updated the information")
                     case '2':
                         new_roll = input("please ente the new roll_no: ")
                         students[name]['roll_no'] = new_roll
                         #saves the json files
-                        content = json.loads(students)
-                        self.path.write_text(content)
+                        self._save_file(students)
                         print("updated the information")
             else:
                 print("student not found!!")
@@ -83,15 +77,14 @@ class Student:
     #add method that delets the student record
     def delete_student(self):
         #loads the json files 
-        students = self._laod_file()
+        students = self._load_file()
         name = input("enter the name of the student: ")
         if name in students:
             confirm = input("please enter the student name again to confirm deletion: ")
             if confirm == name: 
                 del students[name]
                 #saves the json files
-                content = json.dumps(students)
-                self.path.write_text(content)
+                self._save_file(students)
                 print("updated the information")
             else: 
                 print("not the same name")
@@ -100,7 +93,8 @@ class Student:
     ##add the method to add the marks 
     def add_marks(self):
         #laods the json file
-        students = self._laod_file()
+        print("---running add marks function will update the makrs---")
+        students = self._load_file()
         name = input("please enter the name of the student: ")
         if name in students: 
             print('\n_____STUDENT MARKS UPDATE________')
@@ -112,28 +106,25 @@ class Student:
                     students[name]['marks']['python'] = score
                     print('marks updated')
                     #saves the json files 
-                    content = json.dumps(students)
-                    self.path.write_text(content)
+                    self._save_file(students)
                 case '2':
                     score =float(input("please enter the marks: "))
                     students[name]['marks']['math'] = score
                     print('marks updated')
                     #lsaves the json file
-                    content = json.dumps(students)
-                    self.path.write_text(content)
+                    self._save_file(students)
                 case '3':
                     score = float(input("please enter the marks: "))
                     students[name]['marks']['english'] = score
                     print('marks updated')
                     #saves the json files
-                    content = json.dumps(students)
-                    self.path.write_text(content)
+                    self._save_file(students)
         else: 
             print("student not found!!")
     ##add the method to calculate the marks 
     def generate_report(self):
         #laods the json files
-        students = self._laod_file()
+        students = self._load_file()
         name = input("please enter the name of the students: ")
         if name in students: 
             python_mark = students[name]['marks']['python']
@@ -170,7 +161,7 @@ class Student:
             else: 
                 math_grade = 'fail'
             total_marks = python_mark + english_mark + math_mark
-            if 80 <= total_marks <= 100:
+            if 80 <= total_marks <= 300:
                 total_grade = 'A'
             elif 70 <= total_marks < 80:
                 total_grade = 'B'
@@ -200,52 +191,14 @@ class Student:
             contents = json.dumps(students)
             path.write_text(contents)
             return path
-    def _laod_file(self):
+    def _load_file(self):
         '''loads the json file from the dir'''
         contents = self.path.read_text()
         students = json.loads(contents)
         return students
-
-
-
-
-    #add method that runs the app 
-    def run_student_app(self): 
-        '''runs the application'''
-        print("----------MAIN--MENU---------\n")
-        print("\n1.Add new student\n2.search for the student\n3.update the student informtation\n4.view all students\n5.Delete Student\n6.add marks\n7.generate report")
-        choice = input("please select the correct option: ")
-        match choice:
-            case '1':
-                stdn = Student()
-                name = input("please enter the student name: ")
-                roll_no = input("please ente the roll no: ")
-                stdn.add_student(name,roll_no)
-            case '2': 
-                std1 = Student()
-                std1.search_student()
-            case '3':
-                ##update the content 
-                std2 = Student()
-                std2.update_information()
-            case '4':
-                std3 =Student()
-                std3.view_all_studnets()
-            case '5':
-                std4 = Student()
-                std4.delete_student()
-            case '6':
-                std5 = Student()
-                std5.add_marks()
-            case '7':
-                std6 = Student()
-                std6.generate_report()
-def main():
-    std2 = Student()
-    std2.run_student_app()
-
-if __name__ == "__main__":
-    main()
+    def _save_file(self,students):
+        content = json.dumps(students)
+        self.path.write_text(content)
 
 
 
