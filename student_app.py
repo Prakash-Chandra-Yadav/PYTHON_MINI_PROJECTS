@@ -13,7 +13,7 @@ class Student:
         '''add the new student'''
         contents = self.path.read_text()
         students = json.loads(contents)
-        students[name] = {'roll_no':roll_no, 'marks':{'Python':0,'Math':0, 'English':0}}
+        students[name] = {'roll_no':roll_no, 'marks':{}}
         contents = json.dumps(students)
         self.path.write_text(contents)
         print("student added")
@@ -101,12 +101,84 @@ class Student:
             choice = input("please select the option: ")
             match choice :
                 case '1':
-                    score = input("please enter the marks: ")
+                    score = float(input("please enter the marks: "))
                     students[name]['marks']['python'] = score
                     print('marks updated')
                     content = json.dumps(students)
                     self.path.write_text(content)
-            
+                case '2':
+                    score =float(input("please enter the marks: "))
+                    students[name]['marks']['math'] = score
+                    print('marks updated')
+                    content = json.dumps(students)
+                    self.path.write_text(content)
+                case '3':
+                    score = float(input("please enter the marks: "))
+                    students[name]['marks']['english'] = score
+                    print('marks updated')
+                    content = json.dumps(students)
+                    self.path.write_text(content)
+        else: 
+            print("student not found!!")
+    ##add the method to calculate the marks 
+    def generate_report(self):
+        contents = self.path.read_text()
+        students = json.loads(contents)
+        name = input("please enter the name of the students: ")
+        if name in students: 
+            python_mark = students[name]['marks']['python']
+            if 80 <= python_mark <= 100:
+                python_grade = 'A'
+            elif 70 <= python_mark < 80:
+                python_grade = 'B'
+            elif 60 <= python_mark < 70: 
+                python_grade = 'C'
+            elif 50 <= python_mark < 60:
+                python_grade = 'D'
+            else: 
+                python_grade='fail'
+            english_mark = students[name]['marks']['english']
+            if 80 <= english_mark <= 100:
+                english_grade = 'A'
+            elif 70 <= english_mark < 80:
+                english_grade = 'B'
+            elif 60 <= english_mark < 70: 
+                english_grade = 'C'
+            elif 50 <= english_mark < 60:
+                english_grade = 'D'
+            else: 
+                english_grade = 'fail'
+            math_mark = students[name]['marks']['math']
+            if 80 <= math_mark <= 100:
+                math_grade = 'A'
+            elif 70 <= math_mark < 80:
+                math_grade = 'B'
+            elif 60 <= math_mark < 70: 
+                math_grade = 'C'
+            elif 50 <= math_mark < 60:
+                math_grade = 'D'
+            else: 
+                math_grade = 'fail'
+            total_marks = python_mark + english_mark + math_mark
+            if 80 <= total_marks <= 100:
+                total_grade = 'A'
+            elif 70 <= total_marks < 80:
+                total_grade = 'B'
+            elif 60 <= total_marks < 70: 
+                total_grade = 'C'
+            elif 50 <= total_marks < 60:
+                total_grade = 'D'
+            else: 
+                total_grade = 'fail'
+        #generate the report
+        print(f"-----report of {name} --------")
+        print(f"roll_no: {students[name]['roll_no']}")
+        print(f"python:{python_mark}, grade: {python_grade}")
+        print(f"math:{math_mark}, grade: {math_grade}")
+        print(f"english:{english_mark}, grade: {english_grade}")
+        print("\nTOTAL: ")
+        print(f"total_marks:{total_marks}")
+        print(f"final_grade:{total_grade}")
 
     def _load_path(self):
         '''load the file path'''
@@ -124,7 +196,7 @@ class Student:
     def run_student_app(self): 
         '''runs the application'''
         print("----------MAIN--MENU---------\n")
-        print("\n1.Add new student\n2.search for the student\n3.update the student informtation\n4.view all students\n5.Delete Student\n6.add marks")
+        print("\n1.Add new student\n2.search for the student\n3.update the student informtation\n4.view all students\n5.Delete Student\n6.add marks\n7.generate report")
         choice = input("please select the correct option: ")
         match choice:
             case '1':
@@ -148,6 +220,9 @@ class Student:
             case '6':
                 std5 = Student()
                 std5.add_marks()
+            case '7':
+                std6 = Student()
+                std6.generate_report()
 def main():
     std2 = Student()
     std2.run_student_app()
