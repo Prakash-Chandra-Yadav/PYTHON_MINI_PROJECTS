@@ -2,8 +2,6 @@
 from pathlib import Path 
 import json
 
-from pytest import mark 
-
 class Student:
     def __init__(self):
         '''initialize the needed attributes'''
