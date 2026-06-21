@@ -13,7 +13,7 @@ class Student:
         '''add the new student'''
         contents = self.path.read_text()
         students = json.loads(contents)
-        students[name] = {'roll_no':roll_no, 'marks':{}}
+        students[name] = {'roll_no':roll_no, 'marks':{'Python':0,'Math':0, 'English':0}}
         contents = json.dumps(students)
         self.path.write_text(contents)
         print("student added")
@@ -30,14 +30,14 @@ class Student:
     #add metho to serahc student by their name
     def search_student(self):
         '''search student by their name'''
-        name = input("please ente the name of the student").title()
+        name = input("please ente the name of the student: ")
         try:
             contents = self.path.read_text()
             students = json.loads(contents)
             if name in students:
                 print("----student found---")
                 print("--HERE ARE THE DETAILS----")
-                print(f"\n name: {name}\n 'roll: {students[name]['roll']}")
+                print(f"\n name: {name}\n 'roll: {students[name]['roll_no']}")
                 print("\n---MARKS---")
                 for key,value in students[name]['marks'].items():
                     print(f"{key} : {value}")
@@ -60,14 +60,16 @@ class Student:
                 match choice:
                     case '1':
                         new_name = input("enter the new name: ")
-                        students[name] = new_name
+                        students[new_name] = students.pop(name)
                         content = json.dumps(students)
                         self.path.write_text(content)
+                        print("updated the information")
                     case '2':
                         new_roll = input("please ente the new roll_no: ")
                         students[name]['roll_no'] = new_roll
                         content = json.loads(students)
                         self.path.write_text(content)
+                        print("updated the information")
             else:
                 print("student not found!!")
         except ValueError: 
@@ -75,19 +77,37 @@ class Student:
     #add method that delets the student record
     def delete_student(self):
         contents = self.path.read_text()
-        students = json.load(contents)
+        students = json.loads(contents)
         name = input("enter the name of the student: ")
         if name in students:
             confirm = input("please enter the student name again to confirm deletion: ")
             if confirm == name: 
                 del students[name]
-                content = json.dups(students)
+                content = json.dumps(students)
                 self.path.write_text(content)
                 print("updated the information")
             else: 
                 print("not the same name")
         else: 
             print("student not found")
+    ##add the method to add the marks 
+    def add_marks(self):
+        contents = self.path.read_text()
+        students = json.loads(contents)
+        name = input("please enter the name of the student: ")
+        if name in students: 
+            print('\n_____STUDENT MARKS UPDATE________')
+            print("\n1.Python\n2.Math\n3.English")
+            choice = input("please select the option: ")
+            match choice :
+                case '1':
+                    score = input("please enter the marks: ")
+                    students[name]['marks']['python'] = score
+                    print('marks updated')
+                    content = json.dumps(students)
+                    self.path.write_text(content)
+            
+
     def _load_path(self):
         '''load the file path'''
         path = Path(r'C:\Users\Envay\Desktop\python_mini_projects\students.json')
@@ -104,7 +124,7 @@ class Student:
     def run_student_app(self): 
         '''runs the application'''
         print("----------MAIN--MENU---------\n")
-        print("\n1.Add new student\n2.search for the student\n3.update the student informtation")
+        print("\n1.Add new student\n2.search for the student\n3.update the student informtation\n4.view all students\n5.Delete Student\n6.add marks")
         choice = input("please select the correct option: ")
         match choice:
             case '1':
@@ -112,6 +132,22 @@ class Student:
                 name = input("please enter the student name: ")
                 roll_no = input("please ente the roll no: ")
                 stdn.add_student(name,roll_no)
+            case '2': 
+                std1 = Student()
+                std1.search_student()
+            case '3':
+                ##update the content 
+                std2 = Student()
+                std2.update_information()
+            case '4':
+                std3 =Student()
+                std3.view_all_studnets()
+            case '5':
+                std4 = Student()
+                std4.delete_student()
+            case '6':
+                std5 = Student()
+                std5.add_marks()
 def main():
     std2 = Student()
     std2.run_student_app()
