@@ -11,9 +11,11 @@ class Student:
     #method to add the student
     def add_student(self,name,roll_no):
         '''add the new student'''
+        #loads the json file
         contents = self.path.read_text()
         students = json.loads(contents)
         students[name] = {'roll_no':roll_no, 'marks':{}}
+        #saves the json file 
         contents = json.dumps(students)
         self.path.write_text(contents)
         print("student added")
@@ -22,6 +24,7 @@ class Student:
     def view_all_studnets(self): 
         '''view all the studnet in the system'''
         i = 1
+        #loads the json file 
         contents = self.path.read_text()
         students = json.loads(contents)
         for student in students.keys():
@@ -32,6 +35,7 @@ class Student:
         '''search student by their name'''
         name = input("please ente the name of the student: ")
         try:
+            #loads the json file
             contents = self.path.read_text()
             students = json.loads(contents)
             if name in students:
@@ -49,8 +53,8 @@ class Student:
     def update_information(self):
         '''updates the student information'''
         try: 
-            contents = self.path.read_text()
-            students = json.loads(contents)
+            #loads the json files
+            students = self.load_file()
             name = input("enter the name of the student")
             if name in students: 
                 print("select the details you want to edit: \n")
@@ -61,12 +65,14 @@ class Student:
                     case '1':
                         new_name = input("enter the new name: ")
                         students[new_name] = students.pop(name)
+                        #saves the json files 
                         content = json.dumps(students)
                         self.path.write_text(content)
                         print("updated the information")
                     case '2':
                         new_roll = input("please ente the new roll_no: ")
                         students[name]['roll_no'] = new_roll
+                        #saves the json files
                         content = json.loads(students)
                         self.path.write_text(content)
                         print("updated the information")
@@ -76,13 +82,14 @@ class Student:
             print("please enter the name of the student not roll number")
     #add method that delets the student record
     def delete_student(self):
-        contents = self.path.read_text()
-        students = json.loads(contents)
+        #loads the json files 
+        students = self._laod_file()
         name = input("enter the name of the student: ")
         if name in students:
             confirm = input("please enter the student name again to confirm deletion: ")
             if confirm == name: 
                 del students[name]
+                #saves the json files
                 content = json.dumps(students)
                 self.path.write_text(content)
                 print("updated the information")
@@ -92,8 +99,8 @@ class Student:
             print("student not found")
     ##add the method to add the marks 
     def add_marks(self):
-        contents = self.path.read_text()
-        students = json.loads(contents)
+        #laods the json file
+        students = self._laod_file()
         name = input("please enter the name of the student: ")
         if name in students: 
             print('\n_____STUDENT MARKS UPDATE________')
@@ -104,26 +111,29 @@ class Student:
                     score = float(input("please enter the marks: "))
                     students[name]['marks']['python'] = score
                     print('marks updated')
+                    #saves the json files 
                     content = json.dumps(students)
                     self.path.write_text(content)
                 case '2':
                     score =float(input("please enter the marks: "))
                     students[name]['marks']['math'] = score
                     print('marks updated')
+                    #lsaves the json file
                     content = json.dumps(students)
                     self.path.write_text(content)
                 case '3':
                     score = float(input("please enter the marks: "))
                     students[name]['marks']['english'] = score
                     print('marks updated')
+                    #saves the json files
                     content = json.dumps(students)
                     self.path.write_text(content)
         else: 
             print("student not found!!")
     ##add the method to calculate the marks 
     def generate_report(self):
-        contents = self.path.read_text()
-        students = json.loads(contents)
+        #laods the json files
+        students = self._laod_file()
         name = input("please enter the name of the students: ")
         if name in students: 
             python_mark = students[name]['marks']['python']
@@ -190,6 +200,13 @@ class Student:
             contents = json.dumps(students)
             path.write_text(contents)
             return path
+    def _laod_file(self):
+        '''loads the json file from the dir'''
+        contents = self.path.read_text()
+        students = json.loads(contents)
+        return students
+
+
 
 
     #add method that runs the app 
