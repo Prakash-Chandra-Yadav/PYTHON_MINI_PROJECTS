@@ -14,8 +14,12 @@ class StudentManager:
             match choice:
                 case '1':
                     name = input("please enter the student name: ")
-                    roll_no = input("please ente the roll no: ")
-                    self.manager.add_student(name,roll_no)
+                    try:
+                        roll_no =int(input("please ente the roll no: "))
+                    except ValueError:
+                        print("please enter the integer value")
+                    else:
+                        self.manager.add_student(name,roll_no)
                 case '2': 
                     self.manager.search_student()
                 case '3':

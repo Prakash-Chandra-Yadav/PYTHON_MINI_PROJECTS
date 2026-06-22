@@ -29,49 +29,47 @@ class Student:
     def search_student(self):
         '''search student by their name'''
         name = input("please ente the name of the student: ")
-        try:
-            #loads the json file
-            students = self._load_file()
-            if name in students:
-                print("----student found---")
-                print("--HERE ARE THE DETAILS----")
-                print(f"\n name: {name}\n 'roll: {students[name]['roll_no']}")
-                print("\n---MARKS---")
-                for key,value in students[name]['marks'].items():
-                    print(f"{key} : {value}")
-            else: 
-                print("Student not found")
-        except ValueError:
-            print("please enter the  name of the student!! number is not allowed")
+        #loads the json file
+        students = self._load_file()
+        if name in students:
+            print("----student found---")
+            print("--HERE ARE THE DETAILS----")
+            print(f"\n name: {name}\n 'roll: {students[name]['roll_no']}")
+            print("\n---MARKS---")
+            for key,value in students[name]['marks'].items():
+                print(f"{key} : {value}")
+        else: 
+            print("Student not found")
     #add the method to update the student information
     def update_information(self):
         '''updates the student information'''
-        try: 
-            #loads the json files
-            students = self._load_file()
-            name = input("enter the name of the student")
-            if name in students: 
-                print("select the details you want to edit: \n")
-                print("\n1.Name\n2.Roll_no")
-                choice = input("\nenter the option number: ")
+        #loads the json files
+        students = self._load_file()
+        name = input("enter the name of the student")
+        if name in students: 
+            print("select the details you want to edit: \n")
+            print("\n1.Name\n2.Roll_no")
+            choice = input("\nenter the option number: ")
 
-                match choice:
-                    case '1':
-                        new_name = input("enter the new name: ")
-                        students[new_name] = students.pop(name)
-                        #saves the json files
-                        self._save_file(students)
-                        print("updated the information")
-                    case '2':
-                        new_roll = input("please ente the new roll_no: ")
+            match choice:
+                case '1':
+                    new_name = input("enter the new name: ")
+                    students[new_name] = students.pop(name)
+                    #saves the json files
+                    self._save_file(students)
+                    print("updated the information")
+                case '2':
+                    try:
+                        new_roll = int(input("please ente the new roll_no: "))
+                    except ValueError: 
+                        print("please enter the integer value")
+                    else: 
                         students[name]['roll_no'] = new_roll
                         #saves the json files
                         self._save_file(students)
                         print("updated the information")
-            else:
-                print("student not found!!")
-        except ValueError: 
-            print("please enter the name of the student not roll number")
+        else:
+            print("student not found!!")
     #add method that delets the student record
     def delete_student(self):
         #loads the json files 
@@ -100,23 +98,35 @@ class Student:
             choice = input("please select the option: ")
             match choice :
                 case '1':
-                    score = float(input("please enter the marks: "))
-                    students[name]['marks']['python'] = score
-                    print('marks updated')
-                    #saves the json files 
-                    self._save_file(students)
+                    try:
+                        score = float(input("please enter the marks: "))
+                    except ValueError: 
+                        print("enter number only")
+                    else:
+                        students[name]['marks']['python'] = score
+                        print('marks updated')
+                        #saves the json files 
+                        self._save_file(students)
                 case '2':
-                    score =float(input("please enter the marks: "))
-                    students[name]['marks']['math'] = score
-                    print('marks updated')
-                    #lsaves the json file
-                    self._save_file(students)
+                    try: 
+                        score =float(input("please enter the marks: "))
+                    except ValueError:
+                        print("enter number only")
+                    else: 
+                        students[name]['marks']['math'] = score
+                        print('marks updated')
+                        #lsaves the json file
+                        self._save_file(students)
                 case '3':
-                    score = float(input("please enter the marks: "))
-                    students[name]['marks']['english'] = score
-                    print('marks updated')
-                    #saves the json files
-                    self._save_file(students)
+                    try:
+                        score = float(input("please enter the marks: "))
+                    except ValueError:
+                        print("enter number only")
+                    else:
+                        students[name]['marks']['english'] = score
+                        print('marks updated')
+                        #saves the json files
+                        self._save_file(students)
         else: 
             print("student not found!!")
     ##add the method to calculate the marks 
@@ -125,17 +135,36 @@ class Student:
         students = self._load_file()
         name = input("please enter the name of the students: ")
         if name in students: 
-            python_mark = students[name]['marks']['python']
-            python_grade = self._grade_marks(python_mark)
+            python_mark = students[name]['marks'].get('python')
+            if python_mark is not None:
+                python_grade = self._grade_marks(python_mark)
+            else: 
+                python_mark = 'N/A'
+                python_grade = 'N/A'
 
-            english_mark = students[name]['marks']['english']
-            english_grade = self._grade_marks(english_mark)
 
-            math_mark = students[name]['marks']['math']
-            math_grade = self._grade_marks(math_mark)
+            english_mark = students[name]['marks'].get('english')
+            if english_mark is not None: 
+                english_grade = self._grade_marks(english_mark)
+            else: 
+                english_mark = 'N/A'
+                english_grade = 'N/A'
 
-            total_marks = python_mark + english_mark + math_mark
-            total_grade = self._grade_marks(total_marks)
+            math_mark = students[name]['marks'].get('math')
+            if math_mark is not None:
+                math_grade = self._grade_marks(math_mark)
+            else: 
+                math_mark = 'N/A'
+                math_grade ='N/A'
+            
+            marks =[python_mark,english_mark,math_mark]
+            validated_marks = [m for m in marks if isinstance(m,(int,float))]
+            total_marks = sum(validated_marks) if validated_marks else 'N/A'
+
+            if isinstance(total_marks, (int, float)):
+                total_grade = self._grade_total(total_marks)
+            else:
+                total_grade = 'N/A'
             #generate the report
             print(f"-----report of {name} --------")
             print(f"roll_no: {students[name]['roll_no']}")
@@ -147,7 +176,7 @@ class Student:
             print(f"final_grade:{total_grade}")
         else: 
             print('student not found')
-            
+
     def _grade_marks(self,mark):
             if 80 <= mark <= 100:
                 grade = 'A'
@@ -160,10 +189,21 @@ class Student:
             else: 
                 grade='fail'
             return grade 
+    def _grade_total(self, total):
+        if 240 <= total <= 300:
+            return 'A'
+        elif 210 <= total < 240:
+            return 'B'
+        elif 180 <= total < 210:
+            return 'C'
+        elif 150 <= total < 180:
+            return 'D'
+        else:
+            return 'fail'
 
     def _load_path(self):
         '''load the file path'''
-        path = Path(r'C:\Users\Envay\Desktop\python_mini_projects\students.json')
+        path = Path(__file__).parent/'students.json'
         if path.exists():
             return path
         else: 
