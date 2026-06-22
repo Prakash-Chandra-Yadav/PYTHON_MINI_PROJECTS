@@ -126,58 +126,40 @@ class Student:
         name = input("please enter the name of the students: ")
         if name in students: 
             python_mark = students[name]['marks']['python']
-            if 80 <= python_mark <= 100:
-                python_grade = 'A'
-            elif 70 <= python_mark < 80:
-                python_grade = 'B'
-            elif 60 <= python_mark < 70: 
-                python_grade = 'C'
-            elif 50 <= python_mark < 60:
-                python_grade = 'D'
-            else: 
-                python_grade='fail'
+            python_grade = self._grade_marks(python_mark)
+
             english_mark = students[name]['marks']['english']
-            if 80 <= english_mark <= 100:
-                english_grade = 'A'
-            elif 70 <= english_mark < 80:
-                english_grade = 'B'
-            elif 60 <= english_mark < 70: 
-                english_grade = 'C'
-            elif 50 <= english_mark < 60:
-                english_grade = 'D'
-            else: 
-                english_grade = 'fail'
+            english_grade = self._grade_marks(english_mark)
+
             math_mark = students[name]['marks']['math']
-            if 80 <= math_mark <= 100:
-                math_grade = 'A'
-            elif 70 <= math_mark < 80:
-                math_grade = 'B'
-            elif 60 <= math_mark < 70: 
-                math_grade = 'C'
-            elif 50 <= math_mark < 60:
-                math_grade = 'D'
-            else: 
-                math_grade = 'fail'
+            math_grade = self._grade_marks(math_mark)
+
             total_marks = python_mark + english_mark + math_mark
-            if 80 <= total_marks <= 300:
-                total_grade = 'A'
-            elif 70 <= total_marks < 80:
-                total_grade = 'B'
-            elif 60 <= total_marks < 70: 
-                total_grade = 'C'
-            elif 50 <= total_marks < 60:
-                total_grade = 'D'
+            total_grade = self._grade_marks(total_marks)
+            #generate the report
+            print(f"-----report of {name} --------")
+            print(f"roll_no: {students[name]['roll_no']}")
+            print(f"python:{python_mark}, grade: {python_grade}")
+            print(f"math:{math_mark}, grade: {math_grade}")
+            print(f"english:{english_mark}, grade: {english_grade}")
+            print("\nTOTAL: ")
+            print(f"total_marks:{total_marks}")
+            print(f"final_grade:{total_grade}")
+        else: 
+            print('student not found')
+            
+    def _grade_marks(self,mark):
+            if 80 <= mark <= 100:
+                grade = 'A'
+            elif 70 <= mark < 80:
+                grade = 'B'
+            elif 60 <= mark < 70: 
+                grade = 'C'
+            elif 50 <= mark < 60:
+                grade = 'D'
             else: 
-                total_grade = 'fail'
-        #generate the report
-        print(f"-----report of {name} --------")
-        print(f"roll_no: {students[name]['roll_no']}")
-        print(f"python:{python_mark}, grade: {python_grade}")
-        print(f"math:{math_mark}, grade: {math_grade}")
-        print(f"english:{english_mark}, grade: {english_grade}")
-        print("\nTOTAL: ")
-        print(f"total_marks:{total_marks}")
-        print(f"final_grade:{total_grade}")
+                grade='fail'
+            return grade 
 
     def _load_path(self):
         '''load the file path'''
