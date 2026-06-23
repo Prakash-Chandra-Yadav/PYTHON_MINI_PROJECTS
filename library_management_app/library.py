@@ -13,8 +13,7 @@ class Libraray:
     def add_new_book(self):
         '''gets the details about the book and loads on the json file'''
         #laod the json file  first 
-        contents = self.path.read_text()
-        library = json.loads(contents)
+        library = self._load_library()
 
         title = input("enter the title of the book: ")
         author = input("enter the name of the author: ")
@@ -29,8 +28,19 @@ class Libraray:
 
             library[book_id] ={'title': title, 'author': author, 'total_copies':total_copies, 'available_copies': available_copies, 'borrowed_by':[borrower,] }
 
-            contents = json.dumps(library)
-            self.path.write_text(contents)
+            self._update_library(library)
+    def View_all_books(self):
+        '''method to show all the books in the library '''
+        library = self._load_library()
+        #show all the book titles 
+        i = 0
+        try: 
+            for book in library:
+                print(f'{1}->{book}')
+
+        except KeyError:
+            print("sorry we dont have books now")
+
 
     #create the helper function for creating the path
     def _load_path(self):
@@ -42,10 +52,22 @@ class Libraray:
             library = {}
             contents = json.dumps(library)
             path.write_text(contents)
+    #create the helper function to load the json format 
+    def _load_library(self):
+        '''load the json strudture of the library'''
+        contents = self.path.read_text()
+        library = json.loads(contents)
+        return library
+    #create new method to update the existing library 
+    def _update_library(self,library):
+        '''updates the existing json file of the library with new information'''
+        contents = json.dumps(library)
+        self.path.write_text(contents)
+        
     
 def main():
     l1 = Libraray()
-    l1.add_new_book()
+    l1.View_all_books()
 
 if __name__ == '__main__':
     main()
