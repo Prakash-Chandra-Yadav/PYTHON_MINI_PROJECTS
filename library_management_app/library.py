@@ -29,6 +29,7 @@ class Libraray:
             library[book_id] ={'title': title, 'author': author, 'total_copies':total_copies, 'available_copies': available_copies, 'borrowed_by':[borrower,] }
 
             self._update_library(library)
+    #method to see all the books
     def View_all_books(self):
         '''method to show all the books in the library '''
         library = self._load_library()
@@ -40,8 +41,17 @@ class Libraray:
 
         except KeyError:
             print("sorry we dont have books now")
+    #method to search for the books (converted this into helper function as we  have to options) 
+    def _search_by_book_id(self,book_id):
+        '''searches for the book by using the book id'''
+        library = self._load_library()
+        if book_id in library:
+            title = library[book_id]['title']
+            print(f'book found {book_id}\nTitle : {title}')
+        else:
+            print('book not found')
 
-
+    
     #create the helper function for creating the path
     def _load_path(self):
         '''load the path of the json file'''
@@ -67,7 +77,7 @@ class Libraray:
     
 def main():
     l1 = Libraray()
-    l1.View_all_books()
+    l1.search_by_book_id('9012')
 
 if __name__ == '__main__':
     main()
