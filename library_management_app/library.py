@@ -50,6 +50,14 @@ class Libraray:
             print(f'book found {book_id}\nTitle : {title}')
         else:
             print('book not found')
+    def _search_by_title(self):
+        '''searches for the book by using the book title'''
+        library = self._load_library()
+        title = input('please enter the title of the book: ')
+        if title in library.values():
+            print('book found')
+        else: 
+            print('book not found')
 
     
     #create the helper function for creating the path
