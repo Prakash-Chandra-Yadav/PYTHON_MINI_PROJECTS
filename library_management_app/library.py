@@ -29,7 +29,7 @@ class Libraray:
             library[book_id] ={'title': title, 'author': author, 'total_copies':total_copies, 'available_copies': available_copies, 'borrowed_by':[borrower,] }
 
             self._update_library(library)
-            
+
     #method to see all the books
     def View_all_books(self):
         '''method to show all the books in the library '''
@@ -56,6 +56,22 @@ class Libraray:
                 self._search_by_title() 
             case '':
                 print('please select the correct response!!')
+    def borrow_book(self):
+        '''method to borrow the book'''
+        library = self._load_library()
+        id = input("please enter the book id: ")
+        if id in library: 
+            if library[id]['available_copies'] >=1:
+                name = input("please enter the name of the borrower: ")
+                library[id]['borrowed_by'].append(name)
+                library[id]['available_copies'] -= 1
+                self._update_library(library)
+                print(f'book is successfully borrowed by {name}')
+            else: 
+                print('no copies available to borrow')
+        else: 
+            print('book not found!!')
+
     
     #create the method to update the book information
     def update_booK_info(self):
@@ -166,7 +182,7 @@ class Libraray:
     
 def main():
     l1 = Libraray()
-    l1.delete_book()
+    l1.borrow_book()
 
 if __name__ == '__main__':
     main()
