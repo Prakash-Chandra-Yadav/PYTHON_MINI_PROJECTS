@@ -14,10 +14,9 @@ class Libraray:
         '''gets the details about the book and loads on the json file'''
         #laod the json file  first 
         library = self._load_library()
-
-        title = input("enter the title of the book: ")
-        author = input("enter the name of the author: ")
-        book_id = input("enter the book id: ")
+        title = self._validate_input('Please enter the title of the book: ','Title')
+        author = self._validate_input('Please enter the author of the book: ','Author')
+        book_id = self._validate_input('Please enter the book ID: ','Book ID')
         try: 
             total_copies = int(input("total copies owned by libraries: "))
             available_copies = int(input("enter the number of the copies available: "))
@@ -103,7 +102,15 @@ class Libraray:
                 print('book id didnt match!!')
         else: 
             print('book not found')
-
+    #helper function to validate the input (input cannot be empty)
+    def _validate_input(self,prompt,field_name):
+        '''check if th einput filed is empty '''
+        while True: 
+            value = input(prompt)
+            if value.strip():
+                return value 
+            else:
+                print(f"{field_name} can't be empty!!")
     #helper method to perform the updated is any restrictions need to be applied in future it can be handeled here
     def _perform_update(self,choice,id):
         '''helper function to perform the update'''
@@ -182,7 +189,7 @@ class Libraray:
     
 def main():
     l1 = Libraray()
-    l1.borrow_book()
+    l1.add_new_book()
 
 if __name__ == '__main__':
     main()
