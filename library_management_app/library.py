@@ -56,6 +56,57 @@ class Libraray:
             case '':
                 print('please select the correct response!!')
     
+    #create the method to update the book information
+    def update_booK_info(self):
+        '''this method updates the information of the book'''
+        library = self._load_library()
+        id = input('enter the book ID: ')
+        if id in library:
+            print('\n--please select the information you wan tto update--')
+            print('n1>title\n2>author\n3>Total Copies')
+            choice = input('select the option: ')
+            self._perform_update(choice,id)
+    #create the method to delete the book
+    def delete_book(self):
+        '''method to delete the book from the libraray'''
+        library = self._load_library()
+        id = input("please enter the boom id: ")
+        if id in library:
+            if (library[id]['total_copies'] - library[id]['available_copies']) >=1:
+                print('sorry the book cant be deletd as it is borrowed wait for them tu return the book!!')
+            else: 
+                del library[id]
+        else: 
+            print('book not found')
+    #helper method to perform the updated is any restrictions need to be applied in future it can be handeled here
+    def _perform_update(self,choice,id):
+        '''helper function to perform the update'''
+        library = self._load_library()
+        match choice:
+            case '1':
+                new_title = input("please enter the new title: ")
+                library[id]['title'] = new_title
+                self._update_library(library)
+                print('information updated')
+            case '2':
+                new_author = input("enter the name of the author: ")
+                library[id]['author'] = new_author
+                self._update_library(library)
+                print('information updated')
+            case '3':
+                try:
+                    new_total = int(input("enter the total number of compies: "))
+                except ValueError:
+                    print("integer value is only allowed!!")
+                else:
+                    #total copy cant be less than the borrowed copy
+                    if new_total > (library[id]['total_copies'] - library[id]['available_copies']):
+                        library[id]['total_copies']  = new_total 
+                        self._update_library(library)
+                        print('information updated')
+                    else: 
+                        print("total compies cant be negative")
+  
     #helper function to search for the book by id
     def _search_by_book_id(self,book_id):
         '''searches for the book by using the book id'''
@@ -68,11 +119,17 @@ class Libraray:
     #create the helper function to sarch fir the book title
     def _search_by_title(self):
         '''searches for the book by using the book title'''
+        #set the flag 
+        found = False
         library = self._load_library()
         title = input('please enter the title of the book: ').lower()
         for book_id,book_info in library.items():
             if book_info['title'] == title: 
                 print(f'Found: {title}')
+                found = True 
+                break 
+        if found == False:
+            print('SOrry book not found!!') 
     
     #create the helper function for creating the path
     def _load_path(self):
@@ -99,7 +156,7 @@ class Libraray:
     
 def main():
     l1 = Libraray()
-    l1.search_book()
+    l1.update_booK_info()
 
 if __name__ == '__main__':
     main()
