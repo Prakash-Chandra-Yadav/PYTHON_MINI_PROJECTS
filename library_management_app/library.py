@@ -41,7 +41,22 @@ class Libraray:
 
         except KeyError:
             print("sorry we dont have books now")
-    #method to search for the books (converted this into helper function as we  have to options) 
+    
+    #created the method to search for the book 
+    def search_book(self):
+        '''search for the book by id or title'''
+        print("please select the option\n1>Search by ID\n2.Search by title")
+        choice = input('select your response: ')
+        match choice:
+            case '1':
+                id = input("please enter the book ID: ")
+                self._search_by_book_id(id)  
+            case '2':
+                self._search_by_title() 
+            case '':
+                print('please select the correct response!!')
+    
+    #helper function to search for the book by id
     def _search_by_book_id(self,book_id):
         '''searches for the book by using the book id'''
         library = self._load_library()
@@ -84,7 +99,7 @@ class Libraray:
     
 def main():
     l1 = Libraray()
-    l1.search_by_title()
+    l1.search_book()
 
 if __name__ == '__main__':
     main()
