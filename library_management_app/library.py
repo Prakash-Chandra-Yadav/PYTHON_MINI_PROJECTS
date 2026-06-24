@@ -29,6 +29,7 @@ class Libraray:
             library[book_id] ={'title': title, 'author': author, 'total_copies':total_copies, 'available_copies': available_copies, 'borrowed_by':[borrower,] }
 
             self._update_library(library)
+            
     #method to see all the books
     def View_all_books(self):
         '''method to show all the books in the library '''
@@ -66,18 +67,27 @@ class Libraray:
             print('n1>title\n2>author\n3>Total Copies')
             choice = input('select the option: ')
             self._perform_update(choice,id)
+
     #create the method to delete the book
     def delete_book(self):
         '''method to delete the book from the libraray'''
         library = self._load_library()
         id = input("please enter the boom id: ")
         if id in library:
-            if (library[id]['total_copies'] - library[id]['available_copies']) >=1:
-                print('sorry the book cant be deletd as it is borrowed wait for them tu return the book!!')
+            confirm_id = input('please confirm the book id: ')
+            if id == confirm_id:
+                #book should nt be borrowed currently
+                if (library[id]['total_copies'] - library[id]['available_copies']) >=1:
+                    print('sorry the book cant be deletd as it is borrowed wait for them tu return the book!!')
+                else: 
+                    del library[id]
+                    self._update_library(library)
+                    print('book deleted')
             else: 
-                del library[id]
+                print('book id didnt match!!')
         else: 
             print('book not found')
+
     #helper method to perform the updated is any restrictions need to be applied in future it can be handeled here
     def _perform_update(self,choice,id):
         '''helper function to perform the update'''
@@ -156,7 +166,7 @@ class Libraray:
     
 def main():
     l1 = Libraray()
-    l1.update_booK_info()
+    l1.delete_book()
 
 if __name__ == '__main__':
     main()
