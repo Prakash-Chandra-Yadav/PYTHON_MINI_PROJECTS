@@ -49,7 +49,7 @@ class Libraray:
         choice = input('select your response: ')
         match choice:
             case '1':
-                id = input("please enter the book ID: ")
+                id = self._validate_input('Please enter the book ID: ', 'Book ID')
                 self._search_by_book_id(id)  
             case '2':
                 self._search_by_title() 
@@ -58,7 +58,7 @@ class Libraray:
     def borrow_book(self):
         '''method to borrow the book'''
         library = self._load_library()
-        id = input("please enter the book id: ")
+        id = self._validate_input('Please enter the Book ID: ', 'Book ID')
         if id in library: 
             if library[id]['available_copies'] >=1:
                 name = input("please enter the name of the borrower: ")
@@ -76,7 +76,7 @@ class Libraray:
     def update_booK_info(self):
         '''this method updates the information of the book'''
         library = self._load_library()
-        id = input('enter the book ID: ')
+        id = self._validate_input('Please enter the book ID: ', 'Book ID')
         if id in library:
             print('\n--please select the information you wan tto update--')
             print('n1>title\n2>author\n3>Total Copies')
@@ -87,7 +87,7 @@ class Libraray:
     def delete_book(self):
         '''method to delete the book from the libraray'''
         library = self._load_library()
-        id = input("please enter the boom id: ")
+        id = self._validate_input('Please enter the book ID: ', 'Book ID')
         if id in library:
             confirm_id = input('please confirm the book id: ')
             if id == confirm_id:
@@ -117,12 +117,12 @@ class Libraray:
         library = self._load_library()
         match choice:
             case '1':
-                new_title = input("please enter the new title: ")
+                new_title = self._validate_input('Please enter the new title','New Title')
                 library[id]['title'] = new_title
                 self._update_library(library)
                 print('information updated')
             case '2':
-                new_author = input("enter the name of the author: ")
+                new_author = self._validate_input('Please enter the author','New Author')
                 library[id]['author'] = new_author
                 self._update_library(library)
                 print('information updated')
@@ -155,7 +155,7 @@ class Libraray:
         #set the flag 
         found = False
         library = self._load_library()
-        title = input('please enter the title of the book: ').lower()
+        title = self._validate_input('Please enter the title: ','Title')
         for book_id,book_info in library.items():
             if book_info['title'] == title: 
                 print(f'Found: {title}')
