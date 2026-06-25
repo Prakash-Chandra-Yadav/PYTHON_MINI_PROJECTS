@@ -32,6 +32,7 @@ class LibraryManager:
                     break
                 case '':
                     print('please select the correct option')
+                
 def main():
     library1 = LibraryManager()
     library1.Run_app()

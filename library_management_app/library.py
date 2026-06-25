@@ -19,28 +19,45 @@ class Library:
         book_id = self._validate_input('Please enter the book ID: ','Book ID')
         try: 
             total_copies = int(input("total copies owned by libraries: "))
-            available_copies = int(input("enter the number of the copies available: "))
         except ValueError: 
             print("integere value only allowed")
         else:
-            borrower = input("enter the name of the brower: ")
+            while True:
+                borrower_status = input('does this book have a borrower?(Y/N): ').lower()
+                if borrower_status == 'y':
+                    borrower = input("enter the name of the brower: ")
+                    borrowers = [borrower]
+                    available_copies = total_copies - 1
+                    break
+                elif borrower_status == 'n':
+                    borrowers = []
+                    available_copies = total_copies
+                    break
+                else: 
+                    print('please input y/n')
 
-            library[book_id] ={'title': title, 'author': author, 'total_copies':total_copies, 'available_copies': available_copies, 'borrowed_by':[borrower,] }
+            library[book_id] ={'title': title, 'author': author,
+                                'total_copies':total_copies, 
+                                'available_copies': available_copies,
+                                  'borrowed_by':borrowers }
 
             self._update_library(library)
+            print('book added!!')
 
     #method to see all the books
     def View_all_books(self):
         '''method to show all the books in the library '''
         library = self._load_library()
         #show all the book titles 
-        i = 0
-        try: 
+        i = 1
+        if library:
             for book in library:
-                print(f'{1}->{book}')
+                print(f'{i}->{book}')
+                i += 1
 
-        except KeyError:
-            print("sorry we dont have books now")
+        else: 
+            print('library is currently empty')
+
     
     #created the method to search for the book 
     def search_book(self):
@@ -107,16 +124,17 @@ class Library:
         total_books = 0
         total_available_books = 0
         total_borrowed_books = 0
+
         for book in library:
             total_copies = library[book]['total_copies']
             total_available_copies = library[book]['available_copies']
-            total_borrowed_copy = total_copies - total_available_copies
+            total_borrowed_copy = self._calculate_borrow(book,library)
             print(f'Book ID: {book}')
             print(f'title of the book:{library[book]['title']} ')
             print(f'total copies avaliable: {library[book]['total_copies']}')
 
             print(f'available copies: {library[book]['available_copies']}')
-            print(f'number of book borrowed: { (library[book]['total_copies']) - (library[book]['available_copies'])}')
+            print(f'number of book borrowed: { total_borrowed_copy}')
             print(f'name of the borrowers are:' )
             borrowers = [name for name in library[book]['borrowed_by']]
             for name in borrowers:
@@ -139,7 +157,8 @@ class Library:
             confirm_id = input('please confirm the book id: ') 
             if id == confirm_id:
                 #book should nt be borrowed currently
-                if (library[id]['total_copies'] - library[id]['available_copies']) >=1:
+                borrowed_number = self._calculate_borrow(id,library)
+                if borrowed_number >=1:
                     print('sorry the book cant be deletd as it is borrowed wait for them tu return the book!!')
                 else: 
                     del library[id]
@@ -149,6 +168,14 @@ class Library:
                 print('book id didnt match!!')
         else: 
             print('book not found')
+    #helper function to calculate the borrowed book 
+    def _calculate_borrow(self,id,library):
+        '''calculates the borrowed books'''
+        total = library[id]['total_copies']
+        available = library[id]['available_copies']
+        borrowed = total-available
+        return borrowed
+
     #helper function to validate the input (input cannot be empty)
     def _validate_input(self,prompt,field_name):
         '''check if th einput filed is empty '''
@@ -179,13 +206,14 @@ class Library:
                 except ValueError:
                     print("integer value is only allowed!!")
                 else:
+                    borrowed_number = self._calculate_borrow(id,library)
                     #total copy cant be less than the borrowed copy
-                    if new_total > (library[id]['total_copies'] - library[id]['available_copies']):
+                    if new_total >= borrowed_number:
                         library[id]['total_copies']  = new_total 
                         self._update_library(library)
                         print('information updated')
                     else: 
-                        print("total compies cant be negative")
+                        print(f"can't reduce total below {borrowed_number} — that many copies are currently borrowed")
   
     #helper function to search for the book by id
     def _search_by_book_id(self,book_id):
@@ -221,6 +249,7 @@ class Library:
             library = {}
             contents = json.dumps(library)
             path.write_text(contents)
+            return path
     #create the helper function to load the json format 
     def _load_library(self):
         '''load the json strudture of the library'''
