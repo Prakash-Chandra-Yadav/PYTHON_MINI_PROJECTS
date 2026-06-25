@@ -3,13 +3,13 @@ import json
 
 #create the library class 
 
-class Libraray:
+class Library:
 
     def __init__(self):
         '''set the default attributes here'''
         #add the attributes of the path 
         self.path = self._load_path()
-
+    #method to add the new book
     def add_new_book(self):
         '''gets the details about the book and loads on the json file'''
         #laod the json file  first 
@@ -55,6 +55,7 @@ class Libraray:
                 self._search_by_title() 
             case '':
                 print('please select the correct response!!')
+    #method to borrow the book
     def borrow_book(self):
         '''method to borrow the book'''
         library = self._load_library()
@@ -71,7 +72,23 @@ class Libraray:
         else: 
             print('book not found!!')
 
-    
+    #method to return the book to the library 
+    def return_book(self):
+        '''method to return the book'''
+        library = self._load_library()
+        id = self._validate_input('Enter the book id to return: ','Book ID')
+        if id in library:
+            name = self._validate_input('enter the borrowers name: ','Borrowers_name')
+            if name in library[id]['borrowed_by']:
+                library[id]['available_copies'] += 1
+                library[id]['borrowed_by'].remove(name)
+                self._update_library(library)
+                print('book returned')
+            else: 
+                print('name not found in the borrowers')
+        else: 
+            print('sorry book not found!!')
+                
     #create the method to update the book information
     def update_booK_info(self):
         '''this method updates the information of the book'''
@@ -83,13 +100,43 @@ class Libraray:
             choice = input('select the option: ')
             self._perform_update(choice,id)
 
+    #method to generate the report
+    def generate_report(self):
+        '''method that generates the report'''
+        library = self._load_library()
+        total_books = 0
+        total_available_books = 0
+        total_borrowed_books = 0
+        for book in library:
+            total_copies = library[book]['total_copies']
+            total_available_copies = library[book]['available_copies']
+            total_borrowed_copy = total_copies - total_available_copies
+            print(f'Book ID: {book}')
+            print(f'title of the book:{library[book]['title']} ')
+            print(f'total copies avaliable: {library[book]['total_copies']}')
+
+            print(f'available copies: {library[book]['available_copies']}')
+            print(f'number of book borrowed: { (library[book]['total_copies']) - (library[book]['available_copies'])}')
+            print(f'name of the borrowers are:' )
+            borrowers = [name for name in library[book]['borrowed_by']]
+            for name in borrowers:
+                print(name)
+            total_books += total_copies
+            total_available_books += total_available_copies
+            total_borrowed_books += total_borrowed_copy
+            print("============================")
+        print("final report of library")
+        print(f'Total copies = {total_books}')
+        print(f'Total available copies = {total_available_books}')
+        print(f'Total borrowed books = {total_borrowed_books}')
+
     #create the method to delete the book
     def delete_book(self):
         '''method to delete the book from the libraray'''
         library = self._load_library()
         id = self._validate_input('Please enter the book ID: ', 'Book ID')
         if id in library:
-            confirm_id = input('please confirm the book id: ')
+            confirm_id = input('please confirm the book id: ') 
             if id == confirm_id:
                 #book should nt be borrowed currently
                 if (library[id]['total_copies'] - library[id]['available_copies']) >=1:
@@ -185,12 +232,10 @@ class Libraray:
         '''updates the existing json file of the library with new information'''
         contents = json.dumps(library)
         self.path.write_text(contents)
-        
-    
-def main():
-    l1 = Libraray()
-    l1.add_new_book()
 
+def main():
+    l1 = Library()
+    l1.generate_report()
 if __name__ == '__main__':
     main()
         
